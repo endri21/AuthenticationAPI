@@ -1,7 +1,7 @@
 ﻿
 using System.ComponentModel.DataAnnotations;
 
-namespace CoreApiRegister.Models.Identity
+namespace CoreApiRegister.Features.Identity
 {
     public class RegisterUserRequestModel
     {
