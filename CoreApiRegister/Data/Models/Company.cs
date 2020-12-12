@@ -1,10 +1,12 @@
 ﻿
 
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using static CoreApiRegister.Data.ValidationConst.CompanyConst;
 
 namespace CoreApiRegister.Data.Models
 {
+    [Table("Company")]
     public class Company
     {
         public int Id { get; set; }

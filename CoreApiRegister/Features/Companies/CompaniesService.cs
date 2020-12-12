@@ -1,6 +1,9 @@
 ﻿
 using CoreApiRegister.Data;
 using CoreApiRegister.Data.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CoreApiRegister.Features.Companies
@@ -34,7 +37,8 @@ namespace CoreApiRegister.Features.Companies
                     Address = company.Address,
                     Name = company.Name,
                     UrlImage = company.UrlImage,
-                    UserId = company.UserId
+                    UserId = company.UserId,
+                    Id = company.Id
                 };
 
             }
@@ -43,5 +47,17 @@ namespace CoreApiRegister.Features.Companies
                 return new CreateCompanyRequestModel();
             }
         }
+
+        public async Task<IEnumerable<CompanyListingResponseModel>> GetCompanyByUserId(string userId)
+           => await this.data
+                .Companies
+                .Where(a => a.UserId == userId)
+                .Select(f => new CompanyListingResponseModel
+                {
+                    Id = f.Id,
+                    Name = f.Name,
+                    ImageUrl = f.UrlImage
+                }).ToListAsync();
+        
     }
 }
