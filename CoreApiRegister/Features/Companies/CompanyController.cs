@@ -5,6 +5,7 @@ using CoreApiRegister.Infrastructure.Extensions;
 using CoreApiRegister.Controllers;
 using System;
 using CoreApiRegister.Features.Companies.Models;
+using  CoreApiRegister.Infrastructure;
 
 namespace CoreApiRegister.Features.Companies
 {
@@ -33,6 +34,10 @@ namespace CoreApiRegister.Features.Companies
                 }
 
                 var result = await this.companies.GetCompanyByUserId(userId);
+                if(result == null)
+                {
+                    return BadRequest("Nuk ka te dhena");
+                }
                 // return Ok(result.OrNotFound()); nese perdoret objectextensions
                 return Ok(result);
 
@@ -45,7 +50,7 @@ namespace CoreApiRegister.Features.Companies
 
 
         [HttpGet]
-        [Route("/GetCompanyDetails/{id}")]
+        [Route(WebConstants.RouteId)]
         public async Task<IActionResult> GetCompanyDetails(int id)
         {
             try
@@ -56,8 +61,8 @@ namespace CoreApiRegister.Features.Companies
                     return Unauthorized();
                 }
                 var result = await companies.GetDetailsById(id, userId);
-             
-                return Ok(result);
+                return result != null ? Ok(result) : BadRequest("Nuk ka te dhena !");
+            
 
             }
             catch (Exception ex)
@@ -69,7 +74,7 @@ namespace CoreApiRegister.Features.Companies
 
         [HttpPost]
         [ProducesResponseType(statusCode: 201)]
-        public async Task<ActionResult> Create(CreateCompanyResponseModel vm)
+        public async Task<ActionResult> Create(CreateCompanyRequestModel vm)
         {
             try
             {
@@ -87,6 +92,33 @@ namespace CoreApiRegister.Features.Companies
 
                 return BadRequest(e);
             }
+        }
+   
+        [HttpPut]
+        [Route("/UpdateCompany")]
+        public async Task<ActionResult> UpdateCompany(UpdateCompanyRequestModel vm)
+        {
+            var userId = this.User.GetId();
+            if(userId == null)
+            {
+                return Unauthorized();
+            }
+            vm.UserId = userId;
+            var updated = await companies.UpdateCompanyById(vm);
+            return Ok(updated);
+        }
+
+        [HttpDelete]
+        [Route("/DeleteCompany/" + WebConstants.RouteId)]
+        public async Task<ActionResult> DeleteCompany(int id)
+        {
+            var userId = this.User.GetId();
+            if (userId == null)
+            {
+                return Unauthorized();
+            }         
+            var deleted = await companies.DeleteCompanyById(id,userId);
+            return Ok(deleted);
         }
     }
 }

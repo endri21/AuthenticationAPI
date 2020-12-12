@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using static CoreApiRegister.Data.ValidationConst.CompanyConst;
 namespace CoreApiRegister.Features.Companies.Models
 {
-    public class CreateCompanyResponseModel
+    public class CreateCompanyRequestModel
     {
         public int Id { get; set; }
         [Required]

@@ -3,6 +3,7 @@ using CoreApiRegister.Data;
 using CoreApiRegister.Data.Models;
 using CoreApiRegister.Features.Companies.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace CoreApiRegister.Features.Companies
             this.data = data;
         }
 
-        public async Task<CreateCompanyResponseModel> Create(CreateCompanyResponseModel vm)
+        public async Task<CreateCompanyRequestModel> Create(CreateCompanyRequestModel vm)
         {
             try
             {
@@ -33,7 +34,7 @@ namespace CoreApiRegister.Features.Companies
                 data.Add(company);
                 await data.SaveChangesAsync();
 
-                return new CreateCompanyResponseModel
+                return new CreateCompanyRequestModel
                 {
                     Address = company.Address,
                     Name = company.Name,
@@ -45,7 +46,79 @@ namespace CoreApiRegister.Features.Companies
             }
             catch
             {
-                return new CreateCompanyResponseModel();
+                return new CreateCompanyRequestModel();
+            }
+        }
+
+
+        public async Task<BoolUpdateResponseModel> UpdateCompanyById(UpdateCompanyRequestModel vm)
+        {
+            try
+            {
+                var company = await this.GetCompanyByUserAndId(vm.Id, vm.UserId);
+                if (company == null)
+                {
+                    return new BoolUpdateResponseModel
+                    {
+                        Success = false,
+                        Allowed = false,
+                        Updated = false
+                    };
+                }
+
+                company.Address = vm.Address;
+                company.UrlImage = vm.UrlImage;
+                await data.SaveChangesAsync();
+                return new BoolUpdateResponseModel
+                {
+                    Success = true,
+                    Allowed = true,
+                    Updated = true
+                };
+            }
+            catch (Exception)
+            {
+                return new BoolUpdateResponseModel
+                {
+                    Success = false,
+                    Allowed = false,
+                    Updated = false
+                };
+            }
+        }
+
+        public async Task<BoolDeleteResponseModel> DeleteCompanyById(int id, string userid)
+        {
+            try
+            {
+                var company = await this.GetCompanyByUserAndId(id, userid);
+                if (company == null)
+                {
+                    return new BoolDeleteResponseModel
+                    {
+                        Success = false,
+                        Allowed = false,
+                        Deleted = false
+                    };
+                }
+                data.Companies.Remove(company);
+                await data.SaveChangesAsync();
+                return new BoolDeleteResponseModel
+                {
+                    Success = true,
+                    Allowed = true,
+                    Deleted = true
+
+                };
+            }
+            catch (Exception e)
+            {
+                return new BoolDeleteResponseModel
+                {
+                    Success = false,
+                    Allowed = false,
+                    Deleted = false
+                };
             }
         }
 
@@ -63,7 +136,7 @@ namespace CoreApiRegister.Features.Companies
         public async Task<CompanyDetailsServiceModel> GetDetailsById(int id, string userId)
            => await this.data
             .Companies
-            .Where(u=>u.UserId == userId)
+            .Where(u => u.UserId == userId)
             .Select(f => new CompanyDetailsServiceModel
             {
                 Id = f.Id,
@@ -74,6 +147,14 @@ namespace CoreApiRegister.Features.Companies
                 UserName = f.user.UserName
             })
             .FirstOrDefaultAsync(a => a.Id == id);
-    }
 
+
+
+        private async Task<Company> GetCompanyByUserAndId(int id, string userId)
+          => await this.data
+            .Companies
+            .FirstOrDefaultAsync(a => a.Id == id && a.UserId == userId);
+
+
+    }
 }
