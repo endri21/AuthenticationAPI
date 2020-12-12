@@ -4,21 +4,22 @@ using System.Threading.Tasks;
 using CoreApiRegister.Infrastructure.Extensions;
 using CoreApiRegister.Controllers;
 using System;
+using CoreApiRegister.Features.Companies.Models;
 
 namespace CoreApiRegister.Features.Companies
 {
+    [Authorize]
     public class CompanyController : ApiController
     {
 
-     
+
         private readonly ICompaniesService companies;
 
         public CompanyController(ICompaniesService companies)
         => this.companies = companies;
-        
 
 
-        [Authorize]
+
         [HttpGet]
         [Route("/MineCreated")]
         public async Task<IActionResult> MineCreated()
@@ -26,15 +27,15 @@ namespace CoreApiRegister.Features.Companies
             try
             {
                 var userId = this.User.GetId();
-                if(userId != null && userId !="")
+                if (userId == null)
                 {
-                    var result = await this.companies.GetCompanyByUserId(userId);
-                    return Ok(result);
+                    return Unauthorized();
                 }
-                else
-                {
-                    return BadRequest("no user id valid");
-                } 
+
+                var result = await this.companies.GetCompanyByUserId(userId);
+                // return Ok(result.OrNotFound()); nese perdoret objectextensions
+                return Ok(result);
+
             }
             catch (Exception ex)
             {
@@ -43,26 +44,43 @@ namespace CoreApiRegister.Features.Companies
         }
 
 
-        [Authorize]
-        [HttpPost]
-        [ProducesResponseType(statusCode:201)]
-        public async Task<ActionResult> Create(CreateCompanyRequestModel vm)
+        [HttpGet]
+        [Route("/GetCompanyDetails/{id}")]
+        public async Task<IActionResult> GetCompanyDetails(int id)
         {
             try
-            {         
-                vm.UserId = this.User.GetId();
-                if(vm.UserId == "")
+            {
+                var userId = this.User.GetId();
+                if (userId == null)
                 {
-                    return BadRequest("Id e perdoruesit nuk eshte e sakte ");
+                    return Unauthorized();
+                }
+                var result = await companies.GetDetailsById(id, userId);
+             
+                return Ok(result);
+
+            }
+            catch (Exception ex)
+            { 
+                return BadRequest(ex);
+            }
+        }
+
+
+        [HttpPost]
+        [ProducesResponseType(statusCode: 201)]
+        public async Task<ActionResult> Create(CreateCompanyResponseModel vm)
+        {
+            try
+            {
+                vm.UserId = this.User.GetId();
+                if (vm.UserId == "")
+                {
+                    return Unauthorized();
                 }
                 var result = await companies.Create(vm);
-                if(result != null)
-                {
+             
                 return Created(nameof(this.Create), result);
-
-                }
-                return BadRequest();
-            
             }
             catch (Exception e)
             {

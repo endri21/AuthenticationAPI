@@ -1,6 +1,6 @@
 ﻿
 
-namespace CoreApiRegister.Features.Identity
+namespace CoreApiRegister.Features.Identity.Models
 {
     public class LoginUserRequestModel
     {

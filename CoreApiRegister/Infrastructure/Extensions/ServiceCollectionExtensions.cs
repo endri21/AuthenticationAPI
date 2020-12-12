@@ -3,6 +3,7 @@ using CoreApiRegister.Data;
 using CoreApiRegister.Data.Models;
 using CoreApiRegister.Features.Companies;
 using CoreApiRegister.Features.Identity;
+using CoreApiRegister.Infrastructure.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -103,8 +104,12 @@ namespace CoreApiRegister.Infrastructure.Extensions
                             Version = "v1"
                         });
                 });
-      
 
 
+
+        public static void AddApiCotroller(this IServiceCollection services)
+            => services
+            .AddControllers(op => op.Filters.Add<ModelOrNotFoundActionFilter>());
+       
     }
 }

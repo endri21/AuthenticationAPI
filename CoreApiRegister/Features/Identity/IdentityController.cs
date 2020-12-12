@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using CoreApiRegister.Data.Models;
 using Microsoft.Extensions.Options;
 using CoreApiRegister.Controllers;
+using CoreApiRegister.Features.Identity.Models;
 
 namespace CoreApiRegister.Features.Identity
 {

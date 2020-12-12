@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CoreApiRegister.Infrastructure
+namespace CoreApiRegister.Infrastructure.Extensions
 {
     public static class ApplicationBuilderExtensions
     {

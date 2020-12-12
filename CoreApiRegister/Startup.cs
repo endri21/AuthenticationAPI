@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using CoreApiRegister.Infrastructure;
 using CoreApiRegister.Infrastructure.Extensions;
-
+using CoreApiRegister.Infrastructure.Filters;
 
 namespace CoreApiRegister
 {
@@ -28,7 +28,8 @@ namespace CoreApiRegister
                 .AddJwtAuthentication(services.GetApplicatinSettings(this.Configuration))
                 .AddApplicationServices()
                 .AddSwagger()
-                .AddControllers();
+                .AddApiCotroller();
+               
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -1,8 +1,8 @@
 ﻿
 
-namespace CoreApiRegister.Features.Companies
+namespace CoreApiRegister.Features.Companies.Models
 {
-    public class CompanyListingResponseModel
+    public class CompanyListingServiceModel
     {
         public int Id { get; set; }
         public string Name { get; set; }

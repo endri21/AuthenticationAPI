@@ -1,6 +1,7 @@
 ﻿
 using CoreApiRegister.Data;
 using CoreApiRegister.Data.Models;
+using CoreApiRegister.Features.Companies.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace CoreApiRegister.Features.Companies
             this.data = data;
         }
 
-        public async Task<CreateCompanyRequestModel> Create(CreateCompanyRequestModel vm)
+        public async Task<CreateCompanyResponseModel> Create(CreateCompanyResponseModel vm)
         {
             try
             {
@@ -32,7 +33,7 @@ namespace CoreApiRegister.Features.Companies
                 data.Add(company);
                 await data.SaveChangesAsync();
 
-                return new CreateCompanyRequestModel
+                return new CreateCompanyResponseModel
                 {
                     Address = company.Address,
                     Name = company.Name,
@@ -44,20 +45,35 @@ namespace CoreApiRegister.Features.Companies
             }
             catch
             {
-                return new CreateCompanyRequestModel();
+                return new CreateCompanyResponseModel();
             }
         }
 
-        public async Task<IEnumerable<CompanyListingResponseModel>> GetCompanyByUserId(string userId)
+        public async Task<IEnumerable<CompanyListingServiceModel>> GetCompanyByUserId(string userId)
            => await this.data
                 .Companies
                 .Where(a => a.UserId == userId)
-                .Select(f => new CompanyListingResponseModel
+                .Select(f => new CompanyListingServiceModel
                 {
                     Id = f.Id,
                     Name = f.Name,
                     ImageUrl = f.UrlImage
                 }).ToListAsync();
-        
+
+        public async Task<CompanyDetailsServiceModel> GetDetailsById(int id, string userId)
+           => await this.data
+            .Companies
+            .Where(u=>u.UserId == userId)
+            .Select(f => new CompanyDetailsServiceModel
+            {
+                Id = f.Id,
+                Name = f.Name,
+                Address = f.Address,
+                ImageUrl = f.UrlImage,
+                UserId = f.UserId,
+                UserName = f.user.UserName
+            })
+            .FirstOrDefaultAsync(a => a.Id == id);
     }
+
 }

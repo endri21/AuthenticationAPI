@@ -2,9 +2,9 @@
 
 using System.ComponentModel.DataAnnotations;
 using static CoreApiRegister.Data.ValidationConst.CompanyConst;
-namespace CoreApiRegister.Features.Companies
+namespace CoreApiRegister.Features.Companies.Models
 {
-    public class CreateCompanyRequestModel
+    public class CreateCompanyResponseModel
     {
         public int Id { get; set; }
         [Required]
