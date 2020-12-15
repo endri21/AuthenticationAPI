@@ -8,8 +8,8 @@ namespace CoreApiRegister.Data.Models
     {
 
         public IEnumerable<Company> Companies { get;  } = new HashSet<Company>();
-        public int Invalitated { get; set; }
-        public DateTime CreateAt { get; set; }
+        //public int Invalitated { get; set; }
+        //public DateTime CreateAt { get; set; }
         
     }
 }
