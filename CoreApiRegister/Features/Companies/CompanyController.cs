@@ -36,7 +36,7 @@ namespace CoreApiRegister.Features.Companies
                 var result = await this.companies.GetCompanyByUserId(userId);
                 if(result == null)
                 {
-                    return BadRequest("Nuk ka te dhena");
+                    return BadRequest(result.OrNotFound());
                 }
                 // return Ok(result.OrNotFound()); nese perdoret objectextensions
                 return Ok(result);

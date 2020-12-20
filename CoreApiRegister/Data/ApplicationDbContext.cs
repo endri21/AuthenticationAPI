@@ -14,7 +14,8 @@ namespace CoreApiRegister.Data
 
 
        
-        public  DbSet<Company> Companies { get; set; }
+        public  DbSet<Company> Companies { get; set; } 
+        public  DbSet<UserPost> UserPost { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
